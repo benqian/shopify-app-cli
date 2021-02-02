@@ -67,12 +67,50 @@ module Extension
     autoload :Version, Project.project_filepath('models/version')
     autoload :Type, Project.project_filepath('models/type')
     autoload :ValidationError, Project.project_filepath('models/validation_error')
-
-    class << self
-      Models::Type.load_all
-    end
   end
 
   autoload :ExtensionProjectKeys, Project.project_filepath('extension_project_keys')
   autoload :ExtensionProject, Project.project_filepath('extension_project')
+
+  class Specifications
+    attr_reader :repository
+
+    def initialize
+      @repository = {}
+      load_all
+    end
+
+    def valid?(identifier)
+      repository.key?(identifier)
+    end
+
+    def load_type(identifier)
+      repository[identifier]
+    end
+
+    private
+
+    def load_all
+      search_pattern = %w[lib project_types extension models types *.rb]
+      Dir.glob(File.join(ShopifyCli::ROOT, search_pattern)).map do |path|
+        require(path)
+
+        build_type(infer_type_name_from_path(path)).tap do |type|
+          @repository[type.identifier] = type
+        end
+      end
+    end
+
+    def infer_type_name_from_path(path)
+      File.basename(path, '.rb').split('_').map(&:capitalize).join
+    end
+
+    def build_type(class_name)
+      Extension::Models::Types.const_get(class_name).new
+    end
+  end
+
+  def self.specifications
+    @specifications ||= Specifications.new
+  end
 end

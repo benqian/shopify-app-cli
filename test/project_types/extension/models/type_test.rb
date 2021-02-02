@@ -8,12 +8,12 @@ module Extension
       include ExtensionTestHelpers::TestExtensionSetup
 
       def test_can_load_type_by_identifier
-        assert_equal @test_extension_type.identifier, Models::Type.load_type(@test_extension_type.identifier).identifier
+        assert_equal @test_extension_type.identifier, Extension.specifications.load_type(@test_extension_type.identifier).identifier
       end
 
       def test_valid_determines_if_a_type_is_valid
-        assert Models::Type.valid?(ExtensionTestHelpers::TestExtension::IDENTIFIER)
-        refute Models::Type.valid?('INVALID')
+        assert Extension.specifications.valid?(ExtensionTestHelpers::TestExtension::IDENTIFIER)
+        refute Extension.specifications.valid?('INVALID')
       end
 
       def test_tagline_returns_empty_string_if_not_defined_in_content
