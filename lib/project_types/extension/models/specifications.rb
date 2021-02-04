@@ -1,53 +1,56 @@
 module Extension
   module Models
     class Specifications
-      def initialize
-        @repository = load_all_types
+      HANDLER_IMPLEMENTAION_DIRECTORY = File.expand_path('lib/project_types/extension/models/types', ShopifyCli::ROOT)
+
+      def initialize(&fetch_specifications)
+        @handlers = build_handlers(&fetch_specifications)
       end
 
       def [](identifier)
-        repository[identifier]
+        handlers[identifier]
       end
 
       def valid?(identifier)
-        repository.key?(identifier)
+        handlers.key?(identifier)
       end
 
       def each(&block)
-        repository.values.each(&block)
+        handlers.values.each(&block)
       end
 
       def register(type)
-        repository[type.identifier] = type
+        handlers[type.identifier] = type
       end
 
       def unregister(type)
-        repository.delete(type.identifier)
+        handlers.delete(type.identifier)
       end
 
       protected
 
-      attr_reader :repository
+      attr_reader :handlers
 
       private
 
-      def load_all_types
-        search_pattern = %w[lib project_types extension models types *.rb]
-        Dir.glob(File.join(ShopifyCli::ROOT, search_pattern)).each_with_object({}) do |path, repository|
-          require(path)
+      def build_handlers(&fetch_specifications)
+        ShopifyCli::Result
+          .wrap(&fetch_specifications)
+          .call
+          .then(&method(:require_handler_implementations)) 
+          .then(&method(:instantiate_specification_handlers))
+          .unwrap { |err| raise err }
+      end
 
-          build_type(infer_type_name_from_path(path)).tap do |type|
-            repository[type.identifier] = type
-          end
+      def require_handler_implementations(specifications)
+        specifications.each { |s| require(File.join(HANDLER_IMPLEMENTAION_DIRECTORY, "#{s.identifier}.rb"))}
+      end
+
+      def instantiate_specification_handlers(specifications)
+        specifications.each_with_object({}) do |specification, handlers|
+          handler = Extension::Models::Types.const_get(specification.handler_class_name).new
+          handlers[handler.identifier] = handler
         end
-      end
-
-      def infer_type_name_from_path(path)
-        File.basename(path, '.rb').split('_').map(&:capitalize).join
-      end
-
-      def build_type(class_name)
-        Extension::Models::Types.const_get(class_name).new
       end
     end
   end

@@ -34,6 +34,7 @@ module Extension
     autoload :GetApp, Project.project_filepath('tasks/get_app')
     autoload :CreateExtension, Project.project_filepath('tasks/create_extension')
     autoload :UpdateDraft, Project.project_filepath('tasks/update_draft')
+    autoload :FetchSpecifications, Project.project_filepath('tasks/fetch_specifications')
 
     module Converters
       autoload :RegistrationConverter, Project.project_filepath('tasks/converters/registration_converter')
@@ -67,6 +68,7 @@ module Extension
     autoload :Version, Project.project_filepath('models/version')
     autoload :Type, Project.project_filepath('models/type')
     autoload :ValidationError, Project.project_filepath('models/validation_error')
+    autoload :Specification, Project.project_filepath('models/specification')
     autoload :Specifications, Project.project_filepath('models/specifications')
   end
 
@@ -74,6 +76,6 @@ module Extension
   autoload :ExtensionProject, Project.project_filepath('extension_project')
 
   def self.specifications
-    @specifications ||= Models::Specifications.new
+    @specifications ||= Models::Specifications.new(&Tasks::FetchSpecifications)
   end
 end
