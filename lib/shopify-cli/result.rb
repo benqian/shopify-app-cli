@@ -411,9 +411,9 @@ module ShopifyCli
           end
         end
       else
-        ->(value = nil) do
+        ->(*args) do
           begin
-            wrap(block.call(value))
+            wrap(block.call(*args))
           rescue => error
             wrap(error)
           end
