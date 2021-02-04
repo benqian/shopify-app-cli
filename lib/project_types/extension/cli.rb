@@ -98,7 +98,7 @@ module Extension
       repository.delete(type.identifier)
     end
 
-    protected 
+    protected
 
     attr_reader :repository
 
