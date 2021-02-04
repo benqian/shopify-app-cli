@@ -74,8 +74,7 @@ module Extension
 
   class Specifications
     def initialize
-      @repository = {}
-      load_all
+      @repository = load_all_types
     end
 
     def valid?(identifier)
@@ -105,13 +104,13 @@ module Extension
 
     private
 
-    def load_all
+    def load_all_types
       search_pattern = %w[lib project_types extension models types *.rb]
-      Dir.glob(File.join(ShopifyCli::ROOT, search_pattern)).map do |path|
+      Dir.glob(File.join(ShopifyCli::ROOT, search_pattern)).each_with_object({}) do |path, repository|
         require(path)
 
         build_type(infer_type_name_from_path(path)).tap do |type|
-          @repository[type.identifier] = type
+          repository[type.identifier] = type
         end
       end
     end
