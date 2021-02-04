@@ -8,7 +8,7 @@ module Extension
       include ExtensionTestHelpers::TestExtensionSetup
 
       def test_can_load_type_by_identifier
-        assert_equal @test_extension_type.identifier, Extension.specifications.load_type(@test_extension_type.identifier).identifier
+        assert_equal @test_extension_type.identifier, Extension.specifications[@test_extension_type.identifier].identifier
       end
 
       def test_valid_determines_if_a_type_is_valid

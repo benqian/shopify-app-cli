@@ -8,7 +8,7 @@ module Extension
         def setup
           super
           ShopifyCli::ProjectType.load_type(:extension)
-          @product_subscription = Extension.specifications.load_type(ProductSubscription::IDENTIFIER)
+          @product_subscription = Extension.specifications[ProductSubscription::IDENTIFIER]
         end
 
         def test_create_uses_standard_argo_create_implementation

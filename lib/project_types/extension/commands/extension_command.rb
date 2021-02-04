@@ -14,7 +14,7 @@ module Extension
             @ctx.abort(@ctx.message('errors.unknown_type', project.extension_type_identifier))
           end
 
-          Extension.specifications.load_type(project.extension_type_identifier)
+          Extension.specifications[project.extension_type_identifier]
         end
       end
     end

@@ -77,6 +77,10 @@ module Extension
       @repository = load_all_types
     end
 
+    def [](identifier)
+      repository[identifier]
+    end
+
     def valid?(identifier)
       repository.key?(identifier)
     end
@@ -92,10 +96,6 @@ module Extension
 
     def unregister(type)
       repository.delete(type.identifier)
-    end
-
-    def load_type(identifier)
-      repository[identifier]
     end
 
     protected 

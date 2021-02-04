@@ -26,7 +26,7 @@ module Extension
       end
 
       def ask_type
-        return Extension.specifications.load_type(type) if Extension.specifications.valid?(type)
+        return Extension.specifications[type] if Extension.specifications.valid?(type)
         ctx.puts(ctx.message('create.invalid_type')) unless type.nil?
 
         CLI::UI::Prompt.ask(ctx.message('create.ask_type')) do |handler|
