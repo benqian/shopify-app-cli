@@ -12,11 +12,11 @@ module Extension
 
       def test_loads_all_extension_types_within_types_folder
         extension_type_count = 2
-        assert_equal extension_type_count, Extension.specifications.repository.size
+        assert_equal extension_type_count, Extension.specifications.each.count
       end
 
       def test_all_type_identifiers_are_defined_and_uppercase
-        Extension.specifications.repository.values.each do |type|
+        Extension.specifications.each do |type|
           refute_nil type.identifier
           assert_equal type.identifier.upcase, type.identifier
           refute_empty type.identifier.strip
@@ -24,13 +24,13 @@ module Extension
       end
 
       def test_all_type_identifiers_are_accessible_as_class_or_instance_methods
-        Extension.specifications.repository.values.each do |type|
+        Extension.specifications.each do |type|
           assert_equal type.class::IDENTIFIER, type.identifier
         end
       end
 
       def test_all_type_names_are_defined
-        Extension.specifications.repository.values.each do |type|
+        Extension.specifications.each do |type|
           refute_empty type.name.strip
         end
       end

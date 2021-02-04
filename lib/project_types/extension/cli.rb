@@ -73,8 +73,6 @@ module Extension
   autoload :ExtensionProject, Project.project_filepath('extension_project')
 
   class Specifications
-    attr_reader :repository
-
     def initialize
       @repository = {}
       load_all
@@ -84,9 +82,26 @@ module Extension
       repository.key?(identifier)
     end
 
+    def each(&block)
+      enum_for(:each) if block.nil?
+      repository.values.each(&block)
+    end
+
+    def register(type)
+      repository[type.identifier] = type
+    end
+
+    def unregister(type)
+      repository.delete(type.identifier)
+    end
+
     def load_type(identifier)
       repository[identifier]
     end
+
+    protected 
+
+    attr_reader :repository
 
     private
 

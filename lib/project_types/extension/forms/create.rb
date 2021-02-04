@@ -30,7 +30,7 @@ module Extension
         ctx.puts(ctx.message('create.invalid_type')) unless type.nil?
 
         CLI::UI::Prompt.ask(ctx.message('create.ask_type')) do |handler|
-          Extension.specifications.repository.values.each do |type|
+          Extension.specifications.each do |type|
             handler.option("#{type.name} #{type.tagline}") { type }
           end
         end

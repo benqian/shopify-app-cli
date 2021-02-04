@@ -7,13 +7,13 @@ module Extension
         ShopifyCli::ProjectType.load_type(:extension)
 
         @test_extension_type = ExtensionTestHelpers::TestExtension.new
-        Extension.specifications.repository[@test_extension_type.identifier] = @test_extension_type
+        Extension.specifications.register(@test_extension_type)
         super
       end
 
       def teardown
         super
-        Extension.specifications.repository.delete(ExtensionTestHelpers::TestExtension::IDENTIFIER)
+        Extension.specifications.unregister(@test_extension_type)
       end
     end
   end
